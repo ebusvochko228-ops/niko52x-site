@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Brawl Stars Stats</title>
+    <style>
+      :root {
+        --bg: #1a1a1d;
+        --card: #2a2a30;
+        --text: #e0e0e0;
+        --accent: #ffaa00;
+        --border: #3a3a40;
+      }
+      body {
+        font-family: system-ui, -apple-system, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        margin: 0;
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      h1 { margin-bottom: 0.5rem; }
+      .subtitle { color: #888; margin-bottom: 2rem; }
+      .search-box {
+        display: flex;
+        gap: 0.75rem;
+        margin-bottom: 2.5rem;
+      }
+      input {
+        padding: 12px 16px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        background: var(--card);
+        color: white;
+        width: 240px;
+      }
+      button {
+        padding: 12px 20px;
+        background: var(--accent);
+        color: #000;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+      }
+      button:hover { opacity: 0.9; }
+      #result { width: 100%; max-width: 640px; }
+      .stat-card {
+        background: var(--card);
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      }
+      .player-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+      .name { font-size: 1.4rem; font-weight: 700; }
+      .tag { color: #888; }
+      .row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-top: 1rem; }
+      .cell { background: #333; padding: 0.7rem; border-radius: 6px; }
+      .label { display: block; font-size: 0.85rem; color: #aaa; margin-bottom: 0.3rem; }
+      .value { font-weight: 600; }
+      .error { color: #ff5555; }
+      .loading { color: #888; }
+    </style>
+  </head>
+  <body>
+    <h1>Статистика Brawl Stars</h1>
+    <p class="subtitle">Введите тег игрока (например, #ABC123456)</p>
+
+    <div class="search-box">
+      <input id="playerTag" type="text" placeholder="#..." />
+      <button onclick="loadStats()">Найти</button>
+    </div>
+
+    <div id="result"></div>
+
+    <script>
+      async function loadStats() {
+        const tag = document.getElementById('playerTag').value.trim().replace('#', '');
+        const resultDiv = document.getElementById('result');
+        resultDiv.innerHTML = '<p class="loading">Загрузка...</p>';
+
+        try {
+          // Запрос идёт на твой собственный API (Vercel), а не напрямую на сторонний API
+          const res = await fetch(`/api/player?tag=${encodeURIComponent(tag)}`);
+          const data = await res.json();
+
+          if (!res.ok || data.error) {
+            const msg = data.message || data.error || 'Не удалось получить данные';
+            resultDiv.innerHTML = `<p class="error">Ошибка: ${msg}</p>`;
+            return;
+          }
+
+          resultDiv.innerHTML = `
+            <div class="stat-card">
+              <div class="player-header">
+                <div>
+                  <div class="name">${escapeHtml(data.name)}</div>
+                  <div class="tag">#${escapeHtml(data.tag)}</div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="cell">
+                  <span class="label">Трофеи</span>
+                  <span class="value">${data.trophies}</span>
+                </div>
+                <div class="cell">
+                  <span class="label">Макс. трофеи</span>
+                  <span class="value">${data.highestTrophies}</span>
+                </div>
+                <div class="cell">
+                  <span class="label">Уровень силы</span>
+                  <span class="value">${data.expLevel}</span>
+                </div>
+                <div class="cell">
+                  <span class="label">Победы 3×3</span>
+                  <span class="value">${data.3vs3Victories || 0}</span>
+                </div>
+                <div class="cell">
+                  <span class="label">Клуб</span>
+                  <span class="value">${data.club?.name || 'Нет клуба'}</span>
+                </div>
+                <div class="cell">
+                  <span class="label">Позиция в клубе</span>
+                  <span class="value">${data.clubPosition || '-'}</span>
+                </div>
+              </div>
+            </div>
+          `;
+        } catch (e) {
+          resultDiv.innerHTML = `<p class="error">Ошибка сети: ${e.message}</p>`;
+        }
+      }
+
+      function escapeHtml(str) {
+        if (!str) return '';
+        return str
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#039;');
+      }
+    </script>
+  </body>
+</html>
