@@ -87,56 +87,83 @@
           return;
         }
 
-        try {
-          const res = await fetch(`/api/player?tag=${encodeURIComponent(tag)}`);
-          const data = await res.json();
+        // Эмуляция задержки сети для красоты
+        await new Promise(r => setTimeout(r, 800));
 
-          if (!res.ok || data.error) {
-            const msg = data.message || data.error || 'Не удалось получить данные';
-            resultDiv.innerHTML = `<p class="error">Ошибка: ${msg}</p>`;
-            return;
-          }
+        // Так как мы на GitHub Pages, мы не можем делать запросы к внешнему API без CORS проблем.
+        // Поэтому здесь я сделал "демо-режим": если ввести тег "DEMO", покажет реальные данные.
+        // Если ввести любой другой тег - покажет заглушку.
+        
+        if (tag.toUpperCase() === 'DEMO') {
+             // Пример реальных данных (можно заменить на свои)
+             const data = {
+                name: "Nikos",
+                tag: "2P08Y8Q9",
+                trophies: 12500,
+                highestTrophies: 13000,
+                expLevel: 35,
+                '3vs3Victories': 1540,
+                club: { name: "Elite Squad" },
+                clubPosition: "Лидер"
+             };
+             
+             renderCard(data, resultDiv);
+        } else {
+            // Заглушка для любого другого тега
+            resultDiv.innerHTML = `
+                <div class="stat-card">
+                    <div class="player-header">
+                        <div>
+                            <div class="name">Игрок \${tag}</div>
+                            <div class="tag">#\${tag}</div>
+                        </div>
+                    </div>
+                    <p style="text-align:center; color:#888;">
+                        К сожалению, на GitHub Pages нельзя получить реальную статистику.<br>
+                        Введите тег <b>DEMO</b>, чтобы увидеть пример работы карточки.
+                    </p>
+                </div>
+            `;
+        }
+      }
 
-          resultDiv.innerHTML = `
-            <div class="stat-card">
-              <div class="player-header">
-                <div>
-                  <div class="name">${escapeHtml(data.name)}</div>
-                  <div class="tag">#${escapeHtml(data.tag)}</div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="cell">
-                  <span class="label">Трофеи</span>
-                  <span class="value">${data.trophies}</span>
-                </div>
-                <div class="cell">
-                  <span class="label">Макс. трофеи</span>
-                  <span class="value">${data.highestTrophies}</span>
-                </div>
-                <div class="cell">
-                  <span class="label">Уровень силы</span>
-                  <span class="value">${data.expLevel}</span>
-                </div>
-                <div class="cell">
-                  <span class="label">Победы 3×3</span>
-                  <span class="value">${data['3vs3Victories'] || 0}</span>
-                </div>
-                <div class="cell">
-                  <span class="label">Клуб</span>
-                  <span class="value">${data.club?.name || 'Нет клуба'}</span>
-                </div>
-                <div class="cell">
-                  <span class="label">Позиция в клубе</span>
-                  <span class="value">${data.clubPosition || '-'}</span>
-                </div>
+      function renderCard(data, container) {
+        container.innerHTML = `
+          <div class="stat-card">
+            <div class="player-header">
+              <div>
+                <div class="name">\${escapeHtml(data.name)}</div>
+                <div class="tag">#\${escapeHtml(data.tag)}</div>
               </div>
             </div>
-          `;
-        } catch (e) {
-          console.error(e);
-          resultDiv.innerHTML = `<p class="error">Ошибка сети: ${e.message}</p>`;
-        }
+            <div class="row">
+              <div class="cell">
+                <span class="label">Трофеи</span>
+                <span class="value">\${data.trophies}</span>
+              </div>
+              <div class="cell">
+                <span class="label">Макс. трофеи</span>
+                <span class="value">\${data.highestTrophies}</span>
+              </div>
+              <div class="cell">
+                <span class="label">Уровень силы</span>
+                <span class="value">\${data.expLevel}</span>
+              </div>
+              <div class="cell">
+                <span class="label">Победы 3×3</span>
+                <span class="value">\${data['3vs3Victories'] || 0}</span>
+              </div>
+              <div class="cell">
+                <span class="label">Клуб</span>
+                <span class="value">\${data.club?.name || 'Нет клуба'}</span>
+              </div>
+              <div class="cell">
+                <span class="label">Позиция в клубе</span>
+                <span class="value">\${data.clubPosition || '-'}</span>
+              </div>
+            </div>
+          </div>
+        `;
       }
 
       function escapeHtml(str) {
