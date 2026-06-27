@@ -87,15 +87,9 @@
           return;
         }
 
-        // Эмуляция задержки сети для красоты
         await new Promise(r => setTimeout(r, 800));
 
-        // Так как мы на GitHub Pages, мы не можем делать запросы к внешнему API без CORS проблем.
-        // Поэтому здесь я сделал "демо-режим": если ввести тег "DEMO", покажет реальные данные.
-        // Если ввести любой другой тег - покажет заглушку.
-        
         if (tag.toUpperCase() === 'DEMO') {
-             // Пример реальных данных (можно заменить на свои)
              const data = {
                 name: "Nikos",
                 tag: "2P08Y8Q9",
@@ -109,7 +103,6 @@
              
              renderCard(data, resultDiv);
         } else {
-            // Заглушка для любого другого тега
             resultDiv.innerHTML = `
                 <div class="stat-card">
                     <div class="player-header">
@@ -119,8 +112,8 @@
                         </div>
                     </div>
                     <p style="text-align:center; color:#888;">
-                        К сожалению, на GitHub Pages нельзя получить реальную статистику.<br>
-                        Введите тег <b>DEMO</b>, чтобы увидеть пример работы карточки.
+                        На GitHub Pages нельзя получить реальную статистику.<br>
+                        Введите тег <b>DEMO</b>, чтобы увидеть пример.
                     </p>
                 </div>
             `;
