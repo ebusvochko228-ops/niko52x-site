@@ -113,7 +113,16 @@
     .muted { color: rgba(255, 218, 244, .78); }
 
     .album-card { max-width: 720px; margin: 0 auto; }
-    .album-top { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; margin-bottom:18px; }
+    
+    /* ИЗМЕНЕНИЕ: Убрали justify-content: space-between, чтобы обложка и текст стояли ближе друг к другу */
+    .album-top { 
+      display:flex; 
+      justify-content:flex-start; 
+      align-items:flex-start; 
+      gap:12px; 
+      margin-bottom:18px; 
+    }
+    
     .album-mid { display:flex; gap:18px; align-items:center; justify-content:center; flex-wrap:wrap; }
     .album-bottom { margin-top:18px; display:flex; gap:14px; align-items:center; justify-content:center; flex-wrap:wrap; }
 
@@ -165,9 +174,9 @@
       to { transform: scale(1.02); }
     }
 
-    .track-meta { text-align:center; min-width: 220px; }
-    .track-title { font-size: 26px; font-weight: 800; color: #fff1fb; }
-    .track-artist { font-size: 16px; margin-top:6px; color: rgba(255, 218, 244, .82); }
+    .track-meta { text-align:left; min-width: 220px; } /* ИЗМЕНЕНИЕ: text-align:left, чтобы текст был слева внутри своего блока */
+    .track-title { font-size: 26px; font-weight: 800; color: #fff1fb; margin:0; }
+    .track-artist { font-size: 16px; margin-top:6px; color: rgba(255, 218, 244, .82); margin-bottom: 10px; }
 
     .player { width: min(520px, 100%); }
     #seek{ width:100%; margin:12px 0 8px; accent-color:#ff7fcf; }
@@ -208,12 +217,8 @@
     </div>
 
     <div class="album-card card">
-      <div class="album-top">
-        <div>
-          <div class="muted" style="font-size:14px;letter-spacing:.3px;">Суперсила</div>
-          <div style="font-size:20px; font-weight:700;">NLO</div>
-        </div>
-      </div>
+      <!-- ИЗМЕНЕНИЕ: Этот блок полностью удален, так как он отвечал за заголовок сверху -->
+      <!-- <div class="album-top">...</div> -->
 
       <div class="album-mid">
         <div class="cover-wrap">
@@ -221,6 +226,7 @@
           <div class="cover-glow"></div>
         </div>
 
+        <!-- ИЗМЕНЕНИЕ: Здесь остались только данные, которые отображаются справа -->
         <div class="track-meta">
           <div class="track-title" id="trackTitle">Суперсила</div>
           <div class="track-artist" id="trackArtist">NLO</div>
