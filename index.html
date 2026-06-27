@@ -4,61 +4,17 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Brawl Stars Stats</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎮</text></svg>">
     <style>
-      :root {
-        --bg: #1a1a1d;
-        --card: #2a2a30;
-        --text: #e0e0e0;
-        --accent: #ffaa00;
-        --border: #3a3a40;
-      }
-      body {
-        font-family: system-ui, -apple-system, sans-serif;
-        background: var(--bg);
-        color: var(--text);
-        margin: 0;
-        padding: 2rem;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-      }
+      :root { --bg: #1a1a1d; --card: #2a2a30; --text: #e0e0e0; --accent: #ffaa00; --border: #3a3a40; }
+      body { font-family: system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 2rem; display: flex; flex-direction: column; align-items: center; }
       h1 { margin-bottom: 0.5rem; text-align: center; }
       .subtitle { color: #888; text-align: center; margin-bottom: 2rem; }
-      .search-box {
-        display: flex;
-        gap: 0.75rem;
-        margin-bottom: 2.5rem;
-        width: 100%;
-        max-width: 400px;
-      }
-      input {
-        padding: 12px 16px;
-        border-radius: 8px;
-        border: 1px solid var(--border);
-        background: #333;
-        color: white;
-        width: 100%;
-        box-sizing: border-box;
-      }
-      button {
-        padding: 12px 20px;
-        background: var(--accent);
-        color: #000;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        font-weight: 600;
-        white-space: nowrap;
-      }
+      .search-box { display: flex; gap: 0.75rem; margin-bottom: 2.5rem; width: 100%; max-width: 400px; }
+      input { padding: 12px 16px; border-radius: 8px; border: 1px solid var(--border); background: #333; color: white; width: 100%; box-sizing: border-box; }
+      button { padding: 12px 20px; background: var(--accent); color: #000; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; }
       button:hover { opacity: 0.9; }
       #result { width: 100%; max-width: 600px; }
-      .stat-card {
-        background: var(--card);
-        padding: 1.5rem;
-        border-radius: 12px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-      }
+      .stat-card { background: var(--card); padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
       .player-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
       .name { font-size: 1.4rem; font-weight: 700; }
       .tag { color: #888; }
@@ -105,7 +61,6 @@
                 club: { name: "Elite Squad" },
                 clubPosition: "Лидер"
              };
-             
              renderCard(data, resultDiv);
         } else {
             resultDiv.innerHTML = `
@@ -135,30 +90,12 @@
               </div>
             </div>
             <div class="row">
-              <div class="cell">
-                <span class="label">Трофеи</span>
-                <span class="value">\${data.trophies}</span>
-              </div>
-              <div class="cell">
-                <span class="label">Макс. трофеи</span>
-                <span class="value">\${data.highestTrophies}</span>
-              </div>
-              <div class="cell">
-                <span class="label">Уровень силы</span>
-                <span class="value">\${data.expLevel}</span>
-              </div>
-              <div class="cell">
-                <span class="label">Победы 3×3</span>
-                <span class="value">\${data['3vs3Victories'] || 0}</span>
-              </div>
-              <div class="cell">
-                <span class="label">Клуб</span>
-                <span class="value">\${data.club?.name || 'Нет клуба'}</span>
-              </div>
-              <div class="cell">
-                <span class="label">Позиция в клубе</span>
-                <span class="value">\${data.clubPosition || '-'}</span>
-              </div>
+              <div class="cell"><span class="label">Трофеи</span><span class="value">\${data.trophies}</span></div>
+              <div class="cell"><span class="label">Макс. трофеи</span><span class="value">\${data.highestTrophies}</span></div>
+              <div class="cell"><span class="label">Уровень силы</span><span class="value">\${data.expLevel}</span></div>
+              <div class="cell"><span class="label">Победы 3×3</span><span class="value">\${data['3vs3Victories'] || 0}</span></div>
+              <div class="cell"><span class="label">Клуб</span><span class="value">\${data.club?.name || 'Нет клуба'}</span></div>
+              <div class="cell"><span class="label">Позиция в клубе</span><span class="value">\${data.clubPosition || '-'}</span></div>
             </div>
           </div>
         `;
@@ -166,12 +103,7 @@
 
       function escapeHtml(str) {
         if (typeof str !== 'string') return '';
-        return str
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;')
-          .replace(/'/g, '&#039;');
+        return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
       }
     </script>
   </body>
