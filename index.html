@@ -82,8 +82,12 @@
         const resultDiv = document.getElementById('result');
         resultDiv.innerHTML = '<p class="loading">Загрузка...</p>';
 
+        if (!tag) {
+          resultDiv.innerHTML = '<p class="error">Пожалуйста, введите тег игрока.</p>';
+          return;
+        }
+
         try {
-          // Запрос идёт на твой собственный API (Vercel), а не напрямую на сторонний API
           const res = await fetch(`/api/player?tag=${encodeURIComponent(tag)}`);
           const data = await res.json();
 
@@ -116,7 +120,7 @@
                 </div>
                 <div class="cell">
                   <span class="label">Победы 3×3</span>
-                  <span class="value">${data.3vs3Victories || 0}</span>
+                  <span class="value">${data['3vs3Victories'] || 0}</span>
                 </div>
                 <div class="cell">
                   <span class="label">Клуб</span>
@@ -130,12 +134,13 @@
             </div>
           `;
         } catch (e) {
+          console.error(e);
           resultDiv.innerHTML = `<p class="error">Ошибка сети: ${e.message}</p>`;
         }
       }
 
       function escapeHtml(str) {
-        if (!str) return '';
+        if (typeof str !== 'string') return '';
         return str
           .replace(/&/g, '&amp;')
           .replace(/</g, '&lt;')
