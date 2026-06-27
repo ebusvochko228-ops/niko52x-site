@@ -1,342 +1,57 @@
 <!doctype html>
 <html lang="ru">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>niko — визитка</title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Rye&family=Unbounded:wght@500;700&display=swap" rel="stylesheet">
-
-  <style>
-    body{
-      margin:0;
-      overflow-x:hidden;
-      background:#0b0b18;
-      color:#fff1fb;
-      font-family: "Unbounded", "Rye", Arial, sans-serif !important;
-    }
-    body, body *{
-      font-family: "Unbounded", "Rye", Arial, sans-serif !important;
-    }
-    h1, h2{
-      font-family: "Rye", "Unbounded", Arial, sans-serif !important;
-      letter-spacing: .2px;
-      text-transform: none;
-    }
-
-    html, body { cursor: none; }
-
-    .cursor-dot{
-      position: fixed;
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: rgba(255,255,255,.85);
-      transform: translate(-50%, -50%);
-      pointer-events: none;
-      z-index: 9999;
-      transition: width .12s ease, height .12s ease, opacity .12s ease;
-    }
-    .cursor-dot.big{
-      width: 10px;
-      height: 10px;
-      opacity: .95;
-    }
-
-    a, button, input[type="range"], img, .cover, #musicBtn { cursor: none !important; }
-    button:hover, button:active, button:focus,
-    a:hover, a:active, a:focus { cursor: none !important; }
-
-    body::before{
-      content:"";
-      position: fixed;
-      inset: -120px;
-      z-index: -1;
-
-      background:
-        radial-gradient(circle at var(--mx, 50%) var(--my, 50%),
-          rgba(255, 120, 205, .22), transparent 52%),
-        radial-gradient(circle at calc(var(--mx, 50%) + 14%) calc(var(--my, 50%) - 10%),
-          rgba(255,255,255,.12), transparent 54%),
-        radial-gradient(circle at calc(var(--mx, 50%) - 24%) calc(var(--my, 50%) + 28%),
-          rgba(255, 60, 160, .12), transparent 58%),
-        linear-gradient(120deg, #130515, #1a0a20, #0f081a);
-
-      filter: blur(34px) saturate(1.15);
-      opacity: .85;
-      animation: bgPulse 10s ease-in-out infinite alternate;
-      will-change: transform, filter;
-    }
-
-    @keyframes bgPulse {
-      0% { transform: translate3d(0,0,0) scale(1); filter: blur(34px) saturate(1.05); opacity: .78; }
-      100% { transform: translate3d(0,-10px,0) scale(1.02); filter: blur(36px) saturate(1.2); opacity: .9; }
-    }
-
-    header {
-      padding: 34px 18px;
-      text-align:center;
-      background: rgba(255, 105, 199, .12);
-      border-bottom: 1px solid rgba(255, 160, 220, .20);
-    }
-
-    .wrap { max-width: 900px; margin: 0 auto; padding: 18px; }
-
-    .card {
-      background:rgba(255, 110, 205, .08);
-      border:1px solid rgba(255, 160, 220, .22);
-      border-radius:14px;
-      padding:18px;
-      margin: 14px 0;
-      backdrop-filter: blur(8px);
-      box-shadow: 0 10px 40px rgba(255, 70, 180, .05);
-    }
-
-    .btns a {
-      display:inline-block;
-      padding:10px 14px;
-      margin:8px 8px 0 0;
-      background:rgba(255, 105, 199, .14);
-      border:1px solid rgba(255, 160, 220, .30);
-      color:#fff1fb;
-      border-radius:10px;
-      text-decoration:none;
-      transition: transform .15s ease, background .15s ease;
-    }
-    .btns a:hover {
-      background:rgba(255, 105, 199, .22);
-      transform: translateY(-1px);
-    }
-
-    .muted { color: rgba(255, 218, 244, .78); }
-
-    .album-card { max-width: 720px; margin: 0 auto; }
-    
-    /* ИЗМЕНЕНИЕ: Убрали justify-content: space-between, чтобы обложка и текст стояли ближе друг к другу */
-    .album-top { 
-      display:flex; 
-      justify-content:flex-start; 
-      align-items:flex-start; 
-      gap:12px; 
-      margin-bottom:18px; 
-    }
-    
-    .album-mid { display:flex; gap:18px; align-items:center; justify-content:center; flex-wrap:wrap; }
-    .album-bottom { margin-top:18px; display:flex; gap:14px; align-items:center; justify-content:center; flex-wrap:wrap; }
-
-    .cover-wrap{
-      position:relative;
-      width: 220px;
-      height: 220px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-    }
-
-    .cover{
-      width: 220px;
-      height: 220px;
-      border-radius: 18px;
-      object-fit: cover;
-      border: 1px solid rgba(255,255,255,.16);
-      box-shadow: 0 22px 70px rgba(0,0,0,.35);
-      transition: transform .35s ease, filter .35s ease;
-      position:relative;
-      z-index:2;
-    }
-
-    .cover-glow{
-      position:absolute;
-      inset:-20px;
-      border-radius: 30px;
-      background:
-        radial-gradient(circle at 30% 25%, rgba(255, 120, 205, .35), transparent 56%),
-        radial-gradient(circle at 70% 75%, rgba(255,255,255,.12), transparent 56%);
-      filter: blur(22px);
-      opacity:.42;
-      transition: opacity .35s ease;
-      z-index:1;
-    }
-
-    .cover-wrap:hover .cover{
-      transform: translateY(-4px) rotate(-1deg) scale(1.01);
-      filter: brightness(1.05) contrast(1.03);
-    }
-    .cover-wrap:hover .cover-glow{
-      opacity: .75;
-      animation: glowPulse 1.6s ease-in-out infinite alternate;
-    }
-
-    @keyframes glowPulse {
-      from { transform: scale(1); }
-      to { transform: scale(1.02); }
-    }
-
-    .track-meta { text-align:left; min-width: 220px; } /* ИЗМЕНЕНИЕ: text-align:left, чтобы текст был слева внутри своего блока */
-    .track-title { font-size: 26px; font-weight: 800; color: #fff1fb; margin:0; }
-    .track-artist { font-size: 16px; margin-top:6px; color: rgba(255, 218, 244, .82); margin-bottom: 10px; }
-
-    .player { width: min(520px, 100%); }
-    #seek{ width:100%; margin:12px 0 8px; accent-color:#ff7fcf; }
-    .time-row{ display:flex; justify-content:space-between; font-size:14px; }
-
-    #musicBtn{
-      border:1px solid rgba(255, 160, 220, .35) !important;
-      background: rgba(255, 105, 199, .18) !important;
-      color:#fff1fb !important;
-      box-shadow: 0 10px 30px rgba(255, 70, 180, .10);
-      transition: transform .15s ease, background .15s ease;
-    }
-    #musicBtn:hover{ transform: translateY(-1px); background: rgba(255, 105, 199, .26) !important; }
-  </style>
-</head>
-
-<body>
-  <div class="cursor-dot" id="cursorDot"></div>
-
-  <header>
-    <h1>niko</h1>
-    <p class="muted">буст бравл старс и многое другое</p>
-  </header>
-
-  <div class="wrap">
-    <div class="card">
-      <h2>Обо мне</h2>
-      <p>Привет! Я niko52x — помогаю игрокам прокачиваться в Brawl Stars. Делаю бусты по разным направлениям и подстраиваюсь под твои цели. Работаю онлайн из удобного для тебя места.</p>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Brawl Stars Stats</title>
+    <style>
+      body { font-family: system-ui, -apple-system, sans-serif; background: #1a1a1d; color: #e0e0e0; padding: 20px; }
+      .container { max-width: 600px; margin: auto; }
+      input { padding: 10px; width: 70%; border-radius: 6px; border: none; }
+      button { padding: 10px 16px; background: #ffaa00; color: #000; border: none; border-radius: 6px; cursor: pointer; }
+      #result { margin-top: 24px; }
+      .stat-card { background: #2a2a30; padding: 16px; border-radius: 8px; margin-bottom: 12px; }
+      .label { color: #888; font-size: 0.9em; }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Статистика Brawl Stars</h1>
+      <p>Введите тег игрока (например, #ABC123456):</p>
+      <input id="playerTag" type="text" placeholder="#..." />
+      <button onclick="loadStats()">Получить статистику</button>
+      <div id="result"></div>
     </div>
 
-    <div class="card">
-      <h2>Контакты</h2>
-      <p class="muted">Ссылки заменишь на свои:</p>
-      <div class="btns">
-        <a href="https://yandex.ru/video/preview/9989267092939177473" target="_blank" rel="noreferrer">Telegram</a>
-        <a href="https://yandex.ru/video/preview/1536842340488546160" target="_blank" rel="noreferrer">VK</a>
-      </div>
-    </div>
+    <script>
+      async function loadStats() {
+        const tag = document.getElementById('playerTag').value.trim().replace('#', '');
+        const resultDiv = document.getElementById('result');
+        resultDiv.innerHTML = '<p>Загрузка...</p>';
 
-    <div class="album-card card">
-      <!-- ИЗМЕНЕНИЕ: Этот блок полностью удален, так как он отвечал за заголовок сверху -->
-      <!-- <div class="album-top">...</div> -->
-
-      <div class="album-mid">
-        <div class="cover-wrap">
-          <img class="cover" src="cover.jpg" alt="Обложка" />
-          <div class="cover-glow"></div>
-        </div>
-
-        <!-- ИЗМЕНЕНИЕ: Здесь остались только данные, которые отображаются справа -->
-        <div class="track-meta">
-          <div class="track-title" id="trackTitle">Суперсила</div>
-          <div class="track-artist" id="trackArtist">NLO</div>
-          <div class="muted" style="margin-top:10px;font-size:14px;">Нажми ▶, чтобы начать</div>
-        </div>
-      </div>
-
-      <div class="album-bottom">
-        <button id="musicBtn" style="cursor:pointer;padding:10px 14px;border-radius:12px;">
-          ▶ Включить
-        </button>
-
-        <div class="player">
-          <audio id="bgMusic" loop preload="auto">
-            <source src="music.mp3" type="audio/mpeg" />
-          </audio>
-
-          <input id="seek" type="range" min="0" max="1000" value="0" />
-
-          <div class="time-row">
-            <span id="tCur" class="muted">0:00</span>
-            <span id="tDur" class="muted">0:00</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    const dot = document.getElementById('cursorDot');
-
-    let targetX = 0.5, targetY = 0.5;
-    let curX = 0.5, curY = 0.5;
-
-    const SMOOTH = 0.04;
-    function renderBg() {
-      curX += (targetX - curX) * SMOOTH;
-      curY += (targetY - curY) * SMOOTH;
-
-      const dampX = 0.92, dampY = 0.88;
-      const x = (curX * dampX + 0.5 * (1 - dampX));
-      const y = (curY * dampY + 0.5 * (1 - dampY));
-
-      document.body.style.setProperty('--mx', (x * 100).toFixed(2) + '%');
-      document.body.style.setProperty('--my', (y * 100).toFixed(2) + '%');
-
-      requestAnimationFrame(renderBg);
-    }
-    requestAnimationFrame(renderBg);
-
-    document.addEventListener('mousemove', (e) => {
-      dot.style.left = e.clientX + 'px';
-      dot.style.top = e.clientY + 'px';
-
-      const w = window.innerWidth || 1;
-      const h = window.innerHeight || 1;
-      targetX = Math.min(1, Math.max(0, e.clientX / w));
-      targetY = Math.min(1, Math.max(0, e.clientY / h));
-    }, { passive: true });
-
-    const hoverTargets = document.querySelectorAll('button, a, .cover-wrap, .cover');
-    hoverTargets.forEach(el => {
-      el.addEventListener('mouseenter', () => dot.classList.add('big'));
-      el.addEventListener('mouseleave', () => dot.classList.remove('big'));
-    });
-
-    const btn = document.getElementById('musicBtn');
-    const audio = document.getElementById('bgMusic');
-
-    const seek = document.getElementById('seek');
-    const tCur = document.getElementById('tCur');
-    const tDur = document.getElementById('tDur');
-
-    function formatTime(s){
-      s = Math.max(0, s || 0);
-      const m = Math.floor(s/60);
-      const sec = Math.floor(s%60).toString().padStart(2,'0');
-      return `${m}:${sec}`;
-    }
-
-    btn.addEventListener('click', async () => {
-      if (audio.paused) {
         try {
-          await audio.play();
-          btn.textContent = '⏸ Пауза';
+          // Замените на актуальный эндпоинт и ключ, если API требует ключ
+          const res = await fetch(`https://api.brawlapi.club/v1/player/${tag}`);
+          const data = await res.json();
+
+          if (!res.ok || data.error) {
+            resultDiv.innerHTML = `<p style="color:#ff5555">Не удалось найти игрока или ошибка API.</p>`;
+            return;
+          }
+
+          resultDiv.innerHTML = `
+            <div class="stat-card">
+              <h2>${data.name}</h2>
+              <p class="label">Трофеи: ${data.trophies}</p>
+              <p class="label">Максимальный ранг: ${data.highestTrophies}</p>
+              <p class="label">Клуб: ${data.club?.name || 'Нет клуба'}</p>
+              <p class="label">Уровень силы: ${data.expLevel}</p>
+            </div>
+          `;
         } catch (e) {
-          btn.textContent = 'Не удалось включить';
+          resultDiv.innerHTML = `<p style="color:#ff5555">Ошибка: ${e.message}</p>`;
         }
-      } else {
-        audio.pause();
-        btn.textContent = '▶ Включить';
       }
-    });
-
-    audio.addEventListener('loadedmetadata', () => {
-      tDur.textContent = formatTime(audio.duration);
-    });
-
-    audio.addEventListener('timeupdate', () => {
-      if (!audio.duration) return;
-      const ratio = audio.currentTime / audio.duration;
-      seek.value = Math.floor(ratio * 1000);
-      tCur.textContent = formatTime(audio.currentTime);
-    });
-
-    seek.addEventListener('input', () => {
-      if (!audio.duration) return;
-      const ratio = seek.value / 1000;
-      audio.currentTime = ratio * audio.duration;
-    });
-  </script>
-</body>
+    </script>
+  </body>
 </html>
