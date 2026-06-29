@@ -8,12 +8,10 @@
     :root{
       --bg:#0b0b0f;
       --panel:#12121a;
-      --panel2:#0f0f16;
       --text:#f3f3f5;
       --muted:#b8b8c2;
       --red:#ff2a2a;
       --red2:#b60000;
-      --line:rgba(255,42,42,.28);
       --shadow: 0 18px 60px rgba(0,0,0,.55);
       --radius:22px;
     }
@@ -33,6 +31,18 @@
       align-items:center;
       justify-content:center;
       padding:28px 14px;
+      overflow-x:hidden;
+    }
+
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      background:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E");
+      mix-blend-mode:overlay;
+      opacity:.18;
     }
 
     .wrap{
@@ -40,6 +50,8 @@
       display:grid;
       grid-template-columns: 1.05fr .95fr;
       gap:18px;
+      position:relative;
+      z-index:1;
     }
 
     @media (max-width: 880px){
@@ -53,6 +65,7 @@
       box-shadow: var(--shadow);
       overflow:hidden;
       position:relative;
+      transform-style:preserve-3d;
     }
 
     .card::before{
@@ -65,13 +78,49 @@
       pointer-events:none;
       opacity:.65;
       filter:saturate(120%);
+      animation: breathe 3.6s ease-in-out infinite;
+    }
+
+    .card::after{
+      content:"";
+      position:absolute;
+      inset:-60px;
+      background: conic-gradient(
+        from 180deg,
+        transparent 0deg,
+        rgba(255,42,42,.22) 55deg,
+        rgba(182,0,0,.20) 120deg,
+        transparent 220deg,
+        transparent 360deg
+      );
+      opacity:.20;
+      pointer-events:none;
+      animation: spin 10s linear infinite;
+      filter: blur(14px);
     }
 
     .card > * { position:relative; }
 
-    .left{
-      padding:26px 24px 22px;
+    @keyframes breathe{
+      0%,100%{ opacity:.55; transform: translate3d(0,0,0) scale(1); }
+      50%{ opacity:.78; transform: translate3d(0,-2px,0) scale(1.01); }
     }
+    @keyframes spin{
+      to{ transform: translate3d(0,0,-1px) rotate(360deg); }
+    }
+
+    .reveal{
+      opacity:0;
+      transform: translateY(10px) scale(.99);
+      transition: opacity .7s ease, transform .7s ease;
+      will-change: opacity, transform;
+    }
+    .reveal.in{
+      opacity:1;
+      transform: translateY(0) scale(1);
+    }
+
+    .left{ padding:26px 24px 22px; }
 
     .brand{
       display:flex;
@@ -94,6 +143,22 @@
       justify-content:center;
       font-weight:900;
       letter-spacing:.5px;
+
+      position:relative;
+      overflow:hidden;
+    }
+    .logo::after{
+      content:"";
+      position:absolute;
+      inset:-20px;
+      background: radial-gradient(circle at 50% 50%, rgba(255,42,42,.35), transparent 60%);
+      animation: ping 1.9s ease-in-out infinite;
+      opacity:.7;
+      pointer-events:none;
+    }
+    @keyframes ping{
+      0%,100%{ transform: scale(.9); opacity:.55; }
+      50%{ transform: scale(1.15); opacity:.95; }
     }
 
     h1{
@@ -115,17 +180,18 @@
       padding-top:10px;
     }
 
-    .title-block{
-      flex:1;
-    }
+    .title-block{ flex:1; }
 
     .big{
       margin:0 0 8px;
       font-size:30px;
       letter-spacing:.2px;
+      line-height:1.15;
     }
+
     .accent{
       color:var(--red);
+      text-shadow: 0 0 28px rgba(255,42,42,.22);
     }
 
     .desc{
@@ -158,35 +224,64 @@
       border:1px solid rgba(255,42,42,.22);
       background: linear-gradient(180deg, rgba(255,42,42,.09), rgba(255,42,42,.03));
       color:var(--text);
-      transition: transform .15s ease, border-color .15s ease, background .15s ease;
+      transition: transform .15s ease, border-color .15s ease, background .15s ease, box-shadow .15s ease;
       user-select:none;
       min-height:44px;
       position:relative;
       overflow:hidden;
+      transform: translateZ(20px);
+    }
+
+    .btn::before{
+      content:"";
+      position:absolute;
+      inset:-2px;
+      background: radial-gradient(240px 60px at 20% 10%, rgba(255,42,42,.55), transparent 55%);
+      opacity:0;
+      transition: opacity .2s ease;
+      pointer-events:none;
     }
 
     .btn::after{
       content:"";
       position:absolute;
-      inset:-2px;
-      background: radial-gradient(240px 60px at 20% 10%, rgba(255,42,42,.35), transparent 55%);
+      left:-25%;
+      top:-60%;
+      width:150%;
+      height:140%;
+      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,.18) 45%, transparent 80%);
+      transform: rotate(18deg) translateX(-30%);
       opacity:0;
-      transition: opacity .15s ease;
+      transition: opacity .2s ease, transform .5s ease;
       pointer-events:none;
+      filter: blur(2px);
     }
 
     .btn:hover{
-      transform: translateY(-2px);
+      transform: translateY(-2px) translateZ(26px);
       border-color: rgba(255,42,42,.55);
       background: linear-gradient(180deg, rgba(255,42,42,.14), rgba(255,42,42,.04));
+      box-shadow: 0 14px 35px rgba(255,42,42,.10);
     }
-    .btn:hover::after{opacity:1}
+    .btn:hover::before{ opacity:1; }
+    .btn:hover::after{
+      opacity:.75;
+      transform: rotate(18deg) translateX(30%);
+    }
 
     .icon{
       width:18px;
       height:18px;
       display:inline-block;
-      filter: drop-shadow(0 8px 16px rgba(255,42,42,.10));
+      filter: drop-shadow(0 8px 16px rgba(255,42,42,.12));
+      transform: translateZ(25px);
+    }
+
+    .divider{
+      height:1px;
+      background: linear-gradient(90deg, transparent, rgba(255,42,42,.45), transparent);
+      margin:6px 0 0;
+      opacity:.9;
     }
 
     .right{
@@ -205,6 +300,7 @@
       grid-template-columns: 120px 1fr;
       gap:14px;
       align-items:center;
+      transform: translateZ(25px);
     }
 
     .cover img{
@@ -215,6 +311,12 @@
       border:1px solid rgba(255,42,42,.35);
       box-shadow: 0 18px 55px rgba(0,0,0,.55);
       background:#14141f;
+      transition: transform .25s ease, box-shadow .25s ease;
+      will-change: transform;
+    }
+    .cover:hover img{
+      transform: translateY(-3px) scale(1.03);
+      box-shadow: 0 26px 80px rgba(0,0,0,.62);
     }
 
     .track h2{
@@ -222,7 +324,6 @@
       font-size:18px;
       line-height:1.25;
     }
-
     .track .artist{
       margin:0;
       color:var(--muted);
@@ -244,31 +345,189 @@
       background: rgba(255,42,42,.06);
       color: rgba(255,255,255,.92);
       font-size:12.5px;
+      position:relative;
+      overflow:hidden;
+      transform: translateZ(20px);
     }
+    .pill::after{
+      content:"";
+      position:absolute;
+      inset:-30px;
+      background: radial-gradient(circle at 30% 30%, rgba(255,42,42,.26), transparent 55%);
+      opacity:0;
+      transition: opacity .2s ease;
+      pointer-events:none;
+    }
+    .pill:hover::after{ opacity:1; }
 
+    /* --- КРАСИВЫЙ ПЛЕЕР --- */
     .player{
       border-radius:18px;
       border:1px solid rgba(255,42,42,.20);
-      background: rgba(0,0,0,.20);
+      background:
+        radial-gradient(500px 180px at 20% 0%, rgba(255,42,42,.10), transparent 55%),
+        rgba(0,0,0,.20);
       padding:14px;
+      transform: translateZ(20px);
+      overflow:hidden;
+      position:relative;
     }
 
-    .player .row{
+    .player::before{
+      content:"";
+      position:absolute;
+      inset:-2px;
+      background:
+        radial-gradient(420px 120px at 30% -10%, rgba(255,42,42,.25), transparent 60%),
+        radial-gradient(420px 120px at 90% 0%, rgba(182,0,0,.20), transparent 60%);
+      opacity:.55;
+      pointer-events:none;
+    }
+
+    .player-top{
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap:12px;
-      margin-bottom:10px;
+      margin-bottom:8px;
+      position:relative;
+      z-index:1;
     }
 
-    .player .label{
+    .label{
       color:var(--muted);
       font-size:13px;
     }
 
-    audio{
+    .time{
+      color:var(--muted);
+      font-size:12.5px;
+      display:flex;
+      align-items:center;
+      gap:6px;
+      white-space:nowrap;
+    }
+    .slash{ opacity:.7; }
+
+    .controls{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      position:relative;
+      z-index:1;
+    }
+
+    .playBtn{
+      width:48px;
+      height:48px;
+      border-radius:16px;
+      border:1px solid rgba(255,42,42,.32);
+      background: linear-gradient(180deg, rgba(255,42,42,.16), rgba(255,42,42,.05));
+      color:var(--text);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      cursor:pointer;
+      position:relative;
+      overflow:hidden;
+      transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+      box-shadow: 0 18px 40px rgba(0,0,0,.35);
+      flex:0 0 auto;
+    }
+
+    .playBtn:hover{
+      transform: translateY(-2px);
+      border-color: rgba(255,42,42,.65);
+      box-shadow: 0 22px 55px rgba(0,0,0,.48);
+    }
+    .playBtn:active{
+      transform: translateY(-1px) scale(.99);
+    }
+
+    .playIcon{
+      font-size:18px;
+      transform: translateX(1px);
+      transition: transform .2s ease;
+      user-select:none;
+    }
+
+    .ring{
+      position:absolute;
+      inset:-30px;
+      border-radius:999px;
+      background: conic-gradient(from 180deg,
+        transparent 0deg,
+        rgba(255,42,42,.55) 70deg,
+        rgba(182,0,0,.45) 130deg,
+        transparent 220deg);
+      filter: blur(10px);
+      opacity:0;
+      transform: rotate(0deg);
+      pointer-events:none;
+    }
+
+    .player.isPlaying .ring{
+      opacity:.75;
+      animation: ringSpin 1.2s linear infinite;
+    }
+    @keyframes ringSpin{
+      to{ transform: rotate(360deg); }
+    }
+
+    .progressWrap{
+      flex:1;
+      position:relative;
+      padding-top:6px;
+      min-width:180px;
+    }
+
+    #seek{
       width:100%;
-      filter: drop-shadow(0 14px 26px rgba(255,42,42,.08));
+      appearance:none;
+      -webkit-appearance:none;
+      background:transparent;
+      height:26px;
+      margin:0;
+      position:absolute;
+      left:0; top:-6px;
+      z-index:3;
+      cursor:pointer;
+    }
+    #seek:focus{ outline:none; }
+
+    #seek::-webkit-slider-thumb{
+      -webkit-appearance:none;
+      width:16px;
+      height:16px;
+      border-radius:999px;
+      background: rgba(255,42,42,.95);
+      border:1px solid rgba(255,255,255,.18);
+      box-shadow: 0 14px 26px rgba(255,42,42,.22);
+    }
+    #seek::-moz-range-thumb{
+      width:16px; height:16px; border-radius:999px;
+      background: rgba(255,42,42,.95);
+      border:1px solid rgba(255,255,255,.18);
+      box-shadow: 0 14px 26px rgba(255,42,42,.22);
+    }
+
+    .bar{
+      height:10px;
+      border-radius:999px;
+      background: rgba(255,42,42,.10);
+      border:1px solid rgba(255,42,42,.14);
+      position:relative;
+      z-index:1;
+      overflow:hidden;
+    }
+
+    .barFill{
+      height:100%;
+      width:0%;
+      background: linear-gradient(90deg, rgba(255,42,42,.95), rgba(182,0,0,.85));
+      border-radius:999px;
+      box-shadow: 0 16px 35px rgba(255,42,42,.20);
+      transition: width .08s linear;
     }
 
     .footer-note{
@@ -276,18 +535,24 @@
       font-size:12.5px;
       line-height:1.4;
       padding:2px 2px 0;
+      position:relative;
+      z-index:1;
     }
-    .divider{
-      height:1px;
-      background: linear-gradient(90deg, transparent, rgba(255,42,42,.45), transparent);
-      margin:6px 0 0;
+
+    audio{ display:none; }
+
+    @media (prefers-reduced-motion: reduce){
+      .card::before, .card::after, .logo::after { animation:none !important; }
+      .reveal{ transition:none !important; }
+      .btn, .cover img{ transition:none !important; }
+      .player.isPlaying .ring{ animation:none !important; }
     }
   </style>
 </head>
 <body>
   <main class="wrap">
     <section class="card left">
-      <div class="brand">
+      <div class="brand reveal">
         <div class="logo">NI</div>
         <div>
           <h1>Niko52x - визитка</h1>
@@ -296,62 +561,170 @@
 
       <div class="hero">
         <div class="title-block">
-          <p class="big">Связь со мной в один клик<span class="accent">.</span></p>
-          <p class="desc">
-            Нажимай на кнопку — откроется нужный канал.
-          </p>
+          <p class="big reveal">Связь со мной в один клик<span class="accent">.</span></p>
+          <p class="desc reveal">Нажимай на кнопку — откроется нужный канал.</p>
 
           <div class="actions">
-            <!-- Telegram -->
-            <a class="btn" href="https://t.me/niko52x" target="_blank" rel="noopener">
+            <a class="btn reveal" style="transition-delay:.05s" href="https://t.me/niko52x" target="_blank" rel="noopener">
               <span class="icon" aria-hidden="true">✈️</span>
               Telegram
             </a>
-
-            <!-- VK -->
-            <a class="btn" href="https://vk.com/id1108856687" target="_blank" rel="noopener">
+            <a class="btn reveal" style="transition-delay:.10s" href="https://vk.com/id1108856687" target="_blank" rel="noopener">
               <span class="icon" aria-hidden="true">🅥</span>
               ВКонтакте
             </a>
-
-            <!-- Email -->
-            <a class="btn" href="mailto:roglovskiy06@bk.ru">
+            <a class="btn reveal" style="transition-delay:.15s" href="mailto:roglovskiy06@bk.ru">
               <span class="icon" aria-hidden="true">✉️</span>
               Почта
             </a>
           </div>
 
-          <div class="divider"></div>
+          <div class="divider reveal" style="transition-delay:.20s"></div>
         </div>
       </div>
     </section>
 
     <section class="card right">
-      <!-- Обложка -->
-      <div class="cover">
-        <img
-          src="cover.jpg"
-          alt="Обложка песни"
-        />
+      <div class="cover reveal" style="transition-delay:.06s">
+        <img src="cover.jpg" alt="Обложка песни" />
         <div class="track">
           <h2>Название песни: <span class="accent">Тамагочи</span></h2>
           <p class="artist">Исполнитель: <span>лил кидд</span></p>
           <div class="meta">
+            <span class="pill">🔥 премиум вайб</span>
+            <span class="pill">⚡ быстрый доступ</span>
           </div>
         </div>
       </div>
 
-      <!-- Аудио (по желанию) -->
-      <div class="player">
-        <div class="row">
+      <!-- ПЛЕЕР -->
+      <div class="player reveal" style="transition-delay:.14s">
+        <div class="player-top">
+          <div class="label">Плеер</div>
+          <div class="time">
+            <span id="cur">0:00</span>
+            <span class="slash">/</span>
+            <span id="dur">0:00</span>
+          </div>
         </div>
-        <audio controls>
+
+        <div class="controls">
+          <button class="playBtn" id="playBtn" type="button" aria-label="Play/Pause">
+            <span class="ring" aria-hidden="true"></span>
+            <span class="playIcon" id="playIcon">▶</span>
+          </button>
+
+          <div class="progressWrap">
+            <input id="seek" type="range" min="0" max="1000" value="0" step="1" aria-label="Seek" />
+            <div class="bar" aria-hidden="true">
+              <div class="barFill" id="barFill"></div>
+            </div>
+          </div>
+        </div>
+
+        <audio id="audio" preload="metadata">
           <source src="song.mp3" type="audio/mpeg">
           Ваш браузер не поддерживает аудио.
-        <div class="footer-note" style="margin-top:10px;">
-        </div>
+        </audio>
+
+        <div class="footer-note" id="hint">Нажми ▶</div>
       </div>
     </section>
   </main>
+
+  <script>
+    // reveal on scroll
+    const els = document.querySelectorAll('.reveal');
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('in');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    els.forEach(el => io.observe(el));
+
+    // tilt
+    document.querySelectorAll('.card').forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        const r = card.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width;   // 0..1
+        const y = (e.clientY - r.top) / r.height;  // 0..1
+        const rx = (0.5 - y) * 8;
+        const ry = (x - 0.5) * 10;
+        card.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-1px)`;
+      });
+      card.addEventListener('mouseleave', () => card.style.transform = '');
+    });
+
+    // player
+    const audio = document.getElementById('audio');
+    const playBtn = document.getElementById('playBtn');
+    const playIcon = document.getElementById('playIcon');
+    const seek = document.getElementById('seek');
+    const barFill = document.getElementById('barFill');
+    const cur = document.getElementById('cur');
+    const dur = document.getElementById('dur');
+    const hint = document.getElementById('hint');
+    const player = document.querySelector('.player');
+
+    function fmt(t){
+      t = Math.max(0, t || 0);
+      const m = Math.floor(t/60);
+      const s = Math.floor(t%60);
+      return `${m}:${String(s).padStart(2,'0')}`;
+    }
+
+    function setUI(){
+      const d = audio.duration || 0;
+      const t = audio.currentTime || 0;
+
+      cur.textContent = fmt(t);
+      dur.textContent = fmt(d);
+
+      const p = d ? (t/d) : 0;
+      seek.value = Math.round(p * 1000);
+      barFill.style.width = `${p * 100}%`;
+    }
+
+    audio.addEventListener('loadedmetadata', setUI);
+    audio.addEventListener('timeupdate', () => { if (!audio.paused) setUI(); });
+
+    audio.addEventListener('play', () => {
+      player.classList.add('isPlaying');
+      playIcon.textContent = '❚❚';
+      hint.textContent = 'Слушаем…';
+    });
+
+    audio.addEventListener('pause', () => {
+      player.classList.remove('isPlaying');
+      playIcon.textContent = '▶';
+      hint.textContent = audio.currentTime ? 'Пауза. Нажми ▶' : 'Нажми ▶';
+    });
+
+    audio.addEventListener('ended', () => {
+      player.classList.remove('isPlaying');
+      playIcon.textContent = '▶';
+      hint.textContent = 'Конец трека. Ещё раз?';
+      setUI();
+    });
+
+    playBtn.addEventListener('click', async () => {
+      if (audio.paused) {
+        try { await audio.play(); } catch(e) {}
+      } else audio.pause();
+    });
+
+    seek.addEventListener('input', () => {
+      const d = audio.duration || 0;
+      if (!d) return;
+      const p = seek.value / 1000;
+      audio.currentTime = p * d;
+      setUI();
+    });
+
+    setUI();
+  </script>
 </body>
 </html>
